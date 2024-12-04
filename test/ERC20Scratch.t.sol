@@ -9,7 +9,15 @@ contract ERC20Test is Test {
     ERC20 internal erc20;
 
     function setUp() public virtual {
-        erc20 = new ERC20("Meoww", "MEOW");
+        erc20 = new ERC20("Meoww", "MEOW", 9);
+    }
+
+    function testFail_constructorInvalidDecimals0() external {
+        new ERC20("Meoww", "MEOW", 0);
+    }
+
+    function testFail_constructorInvalidDecimals19() external {
+        new ERC20("Meoww", "MEOW", 19);
     }
 
     function test_getName() external view {
@@ -32,14 +40,23 @@ contract ERC20Test is Test {
         assertEq(erc20.balanceOf(address(0)), 0, "balance mismatch");
     }
 
+    function testFail_onlyCreator() external {
+        vm.prank(address(1));
+        erc20.mint(address(1), 1_000_000);
+    }
+
+    function testFail_mintToZeroAddress() external {
+        erc20.mint(address(0), 1_000_000);
+    }
+
+    function testFail_mintToDeadAddress() external {
+        erc20.mint(address(0xdead), 1_000_000);
+    }
+
     function test_mint1m() external {
         erc20.mint(address(this), 1_000_000);
         assertEq(erc20.balanceOf(address(this)), 1_000_000, "balance mismatch");
-    }
-
-    function testFail_transferInsufficientBalance() external {
-        erc20.mint(address(this), 1_000_000);
-        erc20.transfer(address(1), 1_000_001);
+        assertEq(erc20.totalSupply(), 1_000_000, "total supply mismatch");
     }
 
     function testFail_transferToZeroAddress() external {
@@ -47,11 +64,24 @@ contract ERC20Test is Test {
         erc20.transfer(address(0), 100);
     }
 
+    function testFail_transferInsufficientBalance() external {
+        erc20.mint(address(this), 1_000_000);
+        erc20.transfer(address(1), 1_000_001);
+    }
+
     function test_transfer() external {
         erc20.mint(address(this), 1_000_000);
         erc20.transfer(address(1), 100);
         assertEq(erc20.balanceOf(address(this)), 999_900, "balance mismatch");
         assertEq(erc20.balanceOf(address(1)), 100, "balance mismatch");
+    }
+
+    function test_transferToDeadAddress() external {
+        erc20.mint(address(this), 1_000_000);
+        erc20.transfer(address(0xdead), 100);
+        assertEq(erc20.balanceOf(address(this)), 999_900, "balance mismatch");
+        assertEq(erc20.balanceOf(address(0xdead)), 100, "balance mismatch");
+        assertEq(erc20.totalSupply(), 999_900, "total supply mismatch");
     }
 
     function test_approveAndAllowance() external {
@@ -85,11 +115,5 @@ contract ERC20Test is Test {
         erc20.transferFrom(address(this), address(2), 100);
         assertEq(erc20.balanceOf(address(this)), 999_900, "balance mismatch");
         assertEq(erc20.balanceOf(address(2)), 100, "balance mismatch");
-    }
-
-    function test_mint() external {
-        erc20.mint(address(1), 1_000_000);
-        assertEq(erc20.totalSupply(), 1_000_000, "total supply mismatch");
-        assertEq(erc20.balanceOf(address(1)), 1_000_000, "balance mismatch");
     }
 }
