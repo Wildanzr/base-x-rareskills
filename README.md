@@ -26,13 +26,23 @@ ERC20 with proper safe transfer from OpenZeppelin library.
 
 ### Homework 2
 
-Finding a bug in the implementation of ERC20 token freeze utility and spot other serious vulnerabilities in the code.
-
 Helpful reading:
 
 https://www.rareskills.io/post/solidity-beginner-mistakes
 
 https://github.com/d-xo/weird-erc20
+
+Finding a bug in the implementation of ERC20 token freeze utility and spot other serious vulnerabilities in the code.
+
+Method to expliot the bug:
+
+1. Using `transferFrom` instead of `transfer` to bypass the freeze check, because the check is depends on the
+   `msg.sender`.
+2. Even though it's being frozen, it can still be burned.
+
+Vulnerabilities found:
+
+1. Anyone can burn someone else's tokens.
 
 ## License
 
