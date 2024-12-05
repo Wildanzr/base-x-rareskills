@@ -3,7 +3,7 @@ pragma solidity >=0.8.25;
 
 import { Test } from "forge-std/src/Test.sol";
 import { console2 } from "forge-std/src/console2.sol";
-import { ERC20 } from "../src/ERC20Scratch.sol";
+import { ERC20 } from "../../src/homework1/ERC20Scratch.sol";
 
 contract ERC20Test is Test {
     ERC20 internal erc20;

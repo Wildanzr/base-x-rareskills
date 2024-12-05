@@ -4,8 +4,8 @@ pragma solidity >= 0.8.25;
 
 import { Test } from "forge-std/src/Test.sol";
 import { console2 } from "forge-std/src/console2.sol";
-import { DepositTrade } from "../src/DepositTrade.sol";
-import { ERC20 } from "../src/ERC20Scratch.sol";
+import { DepositTrade } from "../../src/homework1/DepositTrade.sol";
+import { ERC20 } from "../../src/homework1/ERC20Scratch.sol";
 
 contract DepositTradeTest is Test {
     DepositTrade internal depositTrade;
