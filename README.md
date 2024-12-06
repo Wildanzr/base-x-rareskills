@@ -44,13 +44,19 @@ Vulnerabilities found:
 
 1. Anyone can burn someone else's tokens.
 
-#### Method to make deposited token got stuck:
+#### Notes for NotBasedRewarder contract:
 
 1. Any deposit to the contract will transfer `rewardToken`, not the `depositToken`, but the withdraw function will
    transfer the `depositToken`, not the `rewardToken`.
-2. The check for for `withdraw` function is greater than deposit amount, leading to the depositor can't withdraw all of
+2. The check for `deposit` function is greater than the allowance given, leading to the depositor can't deposit all of
+   their allowance, and only able for allowance - 1.
+3. The check for for `withdraw` function is greater than deposit amount, leading to the depositor can't withdraw all of
    their deposit, and only able for depositedAmount - 1.
-3. When rewardToken or depositToken is paused, then any transfer will be reverted.
+
+#### Method to make deposited token got stuck:
+
+1. When rewardToken or depositToken is paused, then any transfer will be reverted.
+2. When rewarder doesn't have enough rewardToken to transfer, then transfer event of the rewardToken will be reverted.
 
 ## License
 
