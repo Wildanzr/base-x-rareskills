@@ -34,7 +34,7 @@ https://github.com/d-xo/weird-erc20
 
 Finding a bug in the implementation of ERC20 token freeze utility and spot other serious vulnerabilities in the code.
 
-Method to expliot the bug:
+#### Method to expliot the bug:
 
 1. Using `transferFrom` instead of `transfer` to bypass the freeze check, because the check is depends on the
    `msg.sender`.
@@ -43,6 +43,14 @@ Method to expliot the bug:
 Vulnerabilities found:
 
 1. Anyone can burn someone else's tokens.
+
+#### Method to make deposited token got stuck:
+
+1. Any deposit to the contract will transfer `rewardToken`, not the `depositToken`, but the withdraw function will
+   transfer the `depositToken`, not the `rewardToken`.
+2. The check for for `withdraw` function is greater than deposit amount, leading to the depositor can't withdraw all of
+   their deposit, and only able for depositedAmount - 1.
+3. When rewardToken or depositToken is paused, then any transfer will be reverted.
 
 ## License
 
