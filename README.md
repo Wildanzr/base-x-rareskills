@@ -57,6 +57,18 @@ Vulnerabilities found:
 
 1. When rewardToken or depositToken is paused, then any transfer will be reverted.
 2. When rewarder doesn't have enough rewardToken to transfer, then transfer event of the rewardToken will be reverted.
+3. Yes, depositor can get more than 100 reward coins. All they need to do is deposit 100, then withdraw 100, then
+   deposit 100 again and wait for 24 hours. The next withdraw will give them 200 reward coins. This could happen because
+   there's no updating `internalBalances` on `withdraw` function.
+
+#### Best practices to be implemented:
+
+1. Whenever someone `deposit` or `withdraw` there's should be event emitted.
+2. Use `SafeTransferFrom` via OpenZeppelin library.
+3. There's no updating `internalBalances` on `withdraw` function so anyones who deposited will able to withdraw
+   infinitely until the contract is empty.
+4. Need to add `nonReentrant` modifier to prevent re-entrancy attack and update the `internalBalances` before the actual
+   transfer.
 
 ## License
 
